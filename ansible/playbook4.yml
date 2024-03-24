@@ -1,0 +1,34 @@
+---
+- name: Playbook4
+  hosts: all
+  become: yes
+
+  vars:
+    message1: Concatenate1
+    message2: Concatenate2
+    pwd: test_password
+
+  tasks:
+  - name: Print password
+    debug:
+      var: pwd
+  - debug:
+      msg: "Password: {{ pwd }}"
+  - debug:
+      msg: "Owner --> {{ owner }} <--"
+ 
+  - set_fact: full_message="{{ message1 }} {{ message2 }} from {{ owner }}"
+
+  - debug:
+      var: full_message
+
+  - debug:
+      var: ansible_distribution
+  
+  - shell: uptime
+    register: result
+
+  - debug: 
+     # var: result
+      var: result.stdout
+

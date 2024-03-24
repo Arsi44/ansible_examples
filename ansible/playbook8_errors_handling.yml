@@ -1,0 +1,26 @@
+---
+- name: Error handling example
+  hosts: all
+  any_errors_fatal: true
+  become: yes
+
+  tasks:
+  - name: Install pip22222
+    apt: name=pip state=latest
+# no control
+    ignore_errors: yes
+
+  - name: Task 2
+    shell: echo Some !!!!
+# with control
+    register: result
+    failed_when: result.rc == 0
+##    failed_when: "'text!' in results.stdout"
+
+
+  - debug:
+      var: results
+
+
+  - name: Task 3
+    shell: echo Another Text!

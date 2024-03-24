@@ -1,0 +1,15 @@
+---
+- name: Import Example
+  hosts: all
+  become: yes
+
+  vars:
+    text: "Test text"
+
+  tasks:
+  - name: Ping test
+    ping:
+
+  - name: Create Folders
+    include: playbook7_create_folders.yml
+

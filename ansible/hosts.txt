@@ -1,0 +1,9 @@
+[staging_servers]
+linux1 ansible_host=ip1 owner=User1
+[prod_servers]
+linux2 ansible_host=ip2 owner=User2
+
+[all_servers:children]
+staging_servers
+prod_servers
+

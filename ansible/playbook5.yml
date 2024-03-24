@@ -1,0 +1,52 @@
+---
+- name: Conditions test (Install Apache)
+  hosts: all
+  become: yes
+
+  vars:
+    source_folder: ./my_site
+    dest_folder: /var/www/html
+
+  tasks:
+  - name: Check OS
+    debug: var=ansible_os_family
+
+  - block:       ################ "RedHat" ################
+    - name: install Apache RedHat
+      yum: name=httpd state=latest
+
+    - name: Start Web Server service RedHat
+      service: name=httpd state=started enabled=yes
+    when: ansible_os_family == "RedHat"
+
+
+  - block:        ################ "Debian" ################
+    - name: install Apache Debian
+      apt: name=apache2 state=latest
+
+    - name: Start Web Server service Debian
+      service: name=apache2 state=started enabled=yes
+    when: ansible_os_family == "Debian"
+
+
+  - name: Copy files to webserver
+    copy: src={{ source_folder }}/{{ item }} dest={{ dest_folder }} mode=0555
+    with_fileglob: "{{ source_folder }}*.*"
+#    loop:
+#      - "index.html"
+#      - "file1"
+#      - "file2"
+#      - "file3"
+#      - "file4"
+    notify:
+      - Restart Apache RedHat
+      - Restart Apache Debian
+
+
+  handlers:
+  - name: Restart Apache RedHat
+    service: name=httpd state=restarted
+    when: ansible_os_family == "RedHat"
+  - name: Restart Apache Debian
+    service: name=apache2 state=restarted
+    when: ansible_os_family == "Debian"

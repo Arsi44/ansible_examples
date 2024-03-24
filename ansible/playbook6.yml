@@ -1,0 +1,32 @@
+---
+- name: Loops
+  hosts: staging_servers
+  become: yes
+
+  tasks:
+  - name: Hello
+    debug: msg="Hello {{ item }}"
+    loop: 
+      - "Person 1"
+      - "Person 2"
+      - "Person 3"
+      - "Person 4"
+
+
+  - name: Loop Untill example
+    shell: echo -n A >> myfile.txt && cat myfile.txt
+    register: output
+    delay: 2
+    retries: 10
+    until: output.stdout.find("AAAA") == false
+
+  - name: Print Result
+    debug:
+      var: output.stdout
+
+  - name: Install Pachages
+    apt: name={{ item }} state=latest
+    with_items:
+      - pip
+      - curl
+      - apache2

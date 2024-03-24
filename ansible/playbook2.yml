@@ -1,0 +1,9 @@
+---
+- name: Install service httpd
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Install httpd
+    apt: name=pip state=latest
+
